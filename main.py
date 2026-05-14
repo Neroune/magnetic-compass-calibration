@@ -1,5 +1,4 @@
 import math
-import re
 import webbrowser
 from pathlib import Path
 
@@ -7,7 +6,6 @@ import numpy as np
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
-NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 BAD_LIMIT = 0.20
 
 SEED = 67
@@ -17,25 +15,11 @@ ELITE = 10
 
 
 def project_path(file_name):
-    path = Path(file_name)
-    if path.is_absolute():
-        return path
-    return PROJECT_DIR / path
+    return PROJECT_DIR / file_name
 
 
 def read_points(file_name):
-    points = []
-    text = project_path(file_name).read_text(encoding="utf-8", errors="ignore")
-
-    for line in text.splitlines():
-        nums = NUM_RE.findall(line)
-        if len(nums) >= 3:
-            points.append([float(nums[0]), float(nums[1]), float(nums[2])])
-
-    if not points:
-        raise ValueError("Во входном файле нет точек")
-
-    return np.array(points, dtype=float)
+    return np.loadtxt(project_path(file_name), delimiter=",")
 
 
 def lengths(points):
