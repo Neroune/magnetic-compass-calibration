@@ -1,6 +1,5 @@
 import math
 import re
-import sys
 import webbrowser
 from pathlib import Path
 
@@ -11,7 +10,7 @@ PROJECT_DIR = Path(__file__).resolve().parent
 NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 BAD_LIMIT = 0.20
 
-SEED = 42
+SEED = 67
 GENERATIONS = 700
 POPULATION = 90
 ELITE = 10
@@ -219,12 +218,9 @@ def open_files(file_names):
 
 
 def main():
-    open_graphs = "--no-open" not in sys.argv
-    args = [arg for arg in sys.argv[1:] if not arg.startswith("--")]
-
-    input_file = args[0] if len(args) > 0 else "materials/12.txt"
-    mnk_file = args[1] if len(args) > 1 else "12_mnk.txt"
-    gen_file = args[2] if len(args) > 2 else "12_generative.txt"
+    input_file = "materials/12.txt"
+    mnk_file = "12_mnk.txt"
+    gen_file = "12_generative.txt"
 
     raw = read_points(input_file)
     data = scale_to_mean_field(raw)
@@ -239,8 +235,7 @@ def main():
     save_interactive_plot("graph_mnk.html", "После МНК", mnk)
     save_interactive_plot("graph_generative.html", "После генеративного алгоритма", gen)
 
-    if open_graphs:
-        open_files(["graph_before.html", "graph_mnk.html", "graph_generative.html"])
+    open_files(["graph_before.html", "graph_mnk.html", "graph_generative.html"])
 
     print(f"Файлы: {mnk_file}, {gen_file}")
     print("До калибровки: 12_before_scaled.txt")
