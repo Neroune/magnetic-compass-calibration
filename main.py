@@ -6,7 +6,6 @@ import numpy as np
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
-BAD_LIMIT = 0.20
 
 SEED = 67
 GENERATIONS = 700
@@ -42,8 +41,7 @@ def rms_error(points):
 
 def print_result(name, points):
     err = np.abs(lengths(points) - 1.0)
-    bad = int(np.sum(err > BAD_LIMIT))
-    print(f"{name:20s} RMS={rms_error(points):.6f}  mean={err.mean():.6f}  max={err.max():.6f}  bad={bad}")
+    print(f"{name:20s} RMS={rms_error(points):.6f}  mean={err.mean():.6f}  max={err.max():.6f}")
 
 
 def calibrate_mnk(points):
@@ -133,21 +131,9 @@ def save_points(file_name, points):
             f.write(f"{x:.9f}, {y:.9f}, {z:.9f}\n")
 
 
-def print_worst(raw, calibrated, title):
-    err = lengths(calibrated) - 1.0
-    indexes = np.argsort(np.abs(err))[::-1][:6]
-
-    print(f"\nХудшие точки после {title}:")
-    for i in indexes:
-        x, y, z = raw[i]
-        print(f"  строка {i + 1:3d}: ошибка={err[i]: .6f}, сырая=({x:.0f}, {y:.0f}, {z:.0f})")
-
-
 def save_interactive_plot(file_name, title, points):
     import plotly.graph_objects as go
 
-    err = np.abs(lengths(points) - 1.0)
-    good = err <= BAD_LIMIT
     limit = max(1.1, float(np.max(np.abs(points))) * 1.05)
 
     u = np.linspace(0, 2 * math.pi, 50)
@@ -168,20 +154,12 @@ def save_interactive_plot(file_name, title, points):
         hoverinfo="skip",
     )
     fig.add_scatter3d(
-        x=points[good, 0],
-        y=points[good, 1],
-        z=points[good, 2],
+        x=points[:, 0],
+        y=points[:, 1],
+        z=points[:, 2],
         mode="markers",
-        marker={"size": 3, "color": "#1f77b4"},
+        marker={"size": 3},
         name="точки",
-    )
-    fig.add_scatter3d(
-        x=points[~good, 0],
-        y=points[~good, 1],
-        z=points[~good, 2],
-        mode="markers",
-        marker={"size": 5, "color": "red"},
-        name="ошибка > 0.20",
     )
     fig.update_layout(
         title=title,
@@ -261,9 +239,6 @@ def main():
     print(np.round(mnk_bias, 6), np.round(mnk_scale, 6))
     print("\nГенеративный bias/scale:")
     print(np.round(gen_bias, 6), np.round(gen_scale, 6))
-
-    print_worst(raw, mnk, "МНК")
-    print_worst(raw, gen, "генеративного")
 
 
 if __name__ == "__main__":
