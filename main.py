@@ -196,6 +196,33 @@ def save_interactive_plot(file_name, title, points):
     fig.write_html(project_path(file_name), include_plotlyjs=True)
 
 
+def save_parameters_plot(file_name, points):
+    from plotly.subplots import make_subplots
+
+    counts = np.arange(13, len(points) + 1)
+    h_values = []
+    k_values = []
+
+    for count in counts:
+        _, bias, scale = calibrate_mnk(points[:count])
+        h_values.append(bias)
+        k_values.append(scale)
+
+    h_values = np.array(h_values)
+    k_values = np.array(k_values)
+
+    fig = make_subplots(rows=2, cols=1, subplot_titles=["H1, H2, H3", "K1, K2, K3"])
+    for i in range(3):
+        fig.add_scatter(x=counts, y=h_values[:, i], mode="lines", name=f"H{i + 1}", row=1, col=1)
+        fig.add_scatter(x=counts, y=k_values[:, i], mode="lines", name=f"K{i + 1}", row=2, col=1)
+
+    fig.update_layout(title="Зависимость H и K от количества данных", height=800)
+    fig.update_xaxes(title_text="Количество точек", row=2, col=1)
+    fig.update_yaxes(title_text="H", row=1, col=1)
+    fig.update_yaxes(title_text="K", row=2, col=1)
+    fig.write_html(project_path(file_name), include_plotlyjs=True)
+
+
 def open_files(file_names):
     for file_name in file_names:
         webbrowser.open_new(project_path(file_name).as_uri())
@@ -218,12 +245,14 @@ def main():
     save_interactive_plot("graph_before.html", "До корректировки", data)
     save_interactive_plot("graph_mnk.html", "После МНК", mnk)
     save_interactive_plot("graph_generative.html", "После генеративного алгоритма", gen)
+    save_parameters_plot("graph_parameters.html", data)
 
-    open_files(["graph_before.html", "graph_mnk.html", "graph_generative.html"])
+    open_files(["graph_before.html", "graph_mnk.html", "graph_generative.html", "graph_parameters.html"])
 
     print(f"Файлы: {mnk_file}, {gen_file}")
     print("До калибровки: 12_before_scaled.txt")
-    print("3D-окна: graph_before.html, graph_mnk.html, graph_generative.html\n")
+    print("3D-окна: graph_before.html, graph_mnk.html, graph_generative.html")
+    print("График H/K: graph_parameters.html\n")
     print_result("До", data)
     print_result("После МНК", mnk)
     print_result("После генеративного", gen)
