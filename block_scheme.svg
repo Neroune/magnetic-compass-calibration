@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="2350" viewBox="0 0 1100 2350">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#111"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 30px; font-weight: 700; fill: #111; }
+      .text { font-family: Arial, sans-serif; font-size: 20px; fill: #111; }
+      .small { font-family: Arial, sans-serif; font-size: 18px; fill: #111; }
+      .box { fill: #fff; stroke: #111; stroke-width: 2.6; }
+      .line { fill: none; stroke: #111; stroke-width: 2.4; marker-end: url(#arrow); }
+      .plain { fill: none; stroke: #111; stroke-width: 2.4; }
+      .label { font-family: Arial, sans-serif; font-size: 18px; fill: #111; }
+    </style>
+  </defs>
+
+  <rect width="1100" height="1800" fill="#fff"/>
+  <text x="550" y="45" text-anchor="middle" class="title">Блок-схема программы калибровки магнитного компаса</text>
+
+  <!-- Верхняя часть -->
+  <rect x="405" y="70" width="290" height="70" rx="34" class="box"/>
+  <text x="550" y="113" text-anchor="middle" class="text">Начало</text>
+
+  <path d="M550 140 V170" class="line"/>
+
+  <rect x="340" y="175" width="420" height="90" class="box"/>
+  <text x="550" y="207" text-anchor="middle" class="text">Задать параметры:</text>
+  <text x="550" y="233" text-anchor="middle" class="small">SEED, GENERATIONS,</text>
+  <text x="550" y="256" text-anchor="middle" class="small">POPULATION, ELITE</text>
+
+  <path d="M550 265 V300" class="line"/>
+
+  <rect x="340" y="305" width="420" height="70" class="box"/>
+  <text x="550" y="334" text-anchor="middle" class="text">Загрузка измерений</text>
+  <text x="550" y="359" text-anchor="middle" class="small">materials/12.txt</text>
+
+  <path d="M550 375 V410" class="line"/>
+
+  <rect x="340" y="415" width="420" height="80" class="box"/>
+  <text x="550" y="448" text-anchor="middle" class="text">Общее масштабирование:</text>
+  <text x="550" y="474" text-anchor="middle" class="small">H = H / mean(|H|)</text>
+
+  <!-- Разветвление -->
+  <path d="M550 495 V520" class="plain"/>
+  <path d="M185 520 H915" class="plain"/>
+  <path d="M185 520 V555" class="line"/>
+  <path d="M915 520 V555" class="line"/>
+
+  <!-- Ветка МНК -->
+  <rect x="40" y="560" width="290" height="65" class="box"/>
+  <text x="185" y="600" text-anchor="middle" class="text">Ветвь МНК</text>
+
+  <path d="M185 625 V660" class="line"/>
+
+  <rect x="40" y="665" width="290" height="70" class="box"/>
+  <text x="185" y="693" text-anchor="middle" class="text">Разделить данные</text>
+  <text x="185" y="718" text-anchor="middle" class="text">на X, Y, Z</text>
+
+  <path d="M185 735 V770" class="line"/>
+
+  <rect x="40" y="775" width="290" height="100" class="box"/>
+  <text x="185" y="808" text-anchor="middle" class="text">Сформировать h:</text>
+  <text x="185" y="834" text-anchor="middle" class="small">[-2X, Y², -2Y,</text>
+  <text x="185" y="858" text-anchor="middle" class="small">Z², -2Z, 1]</text>
+
+  <path d="M185 875 V910" class="line"/>
+
+  <rect x="40" y="915" width="290" height="80" class="box"/>
+  <text x="185" y="948" text-anchor="middle" class="text">Сформировать</text>
+  <text x="185" y="974" text-anchor="middle" class="text">target = -X²</text>
+
+  <path d="M185 995 V1030" class="line"/>
+
+  <rect x="40" y="1035" width="290" height="80" class="box"/>
+  <text x="185" y="1068" text-anchor="middle" class="text">Решить систему:</text>
+  <text x="185" y="1094" text-anchor="middle" class="text">np.linalg.lstsq</text>
+
+  <path d="M185 1115 V1150" class="line"/>
+
+  <rect x="40" y="1155" width="290" height="105" class="box"/>
+  <text x="185" y="1187" text-anchor="middle" class="text">Получить параметры:</text>
+  <text x="185" y="1213" text-anchor="middle" class="small">H1,H2,H3 → bias</text>
+  <text x="185" y="1238" text-anchor="middle" class="small">K1,K2,K3 → scale</text>
+
+  <path d="M185 1260 V1295" class="line"/>
+
+  <rect x="40" y="1300" width="290" height="80" class="box"/>
+  <text x="185" y="1332" text-anchor="middle" class="text">Коррекция МНК:</text>
+  <text x="185" y="1358" text-anchor="middle" class="text">(H - bias) / scale</text>
+
+  <!-- Ветка ГА -->
+  <rect x="770" y="560" width="290" height="65" class="box"/>
+  <text x="915" y="587" text-anchor="middle" class="text">Ветвь генеративного</text>
+  <text x="915" y="612" text-anchor="middle" class="text">алгоритма</text>
+
+  <path d="M915 625 V660" class="line"/>
+
+  <rect x="770" y="665" width="290" height="80" class="box"/>
+  <text x="915" y="697" text-anchor="middle" class="text">Вход: H</text>
+  <text x="915" y="723" text-anchor="middle" class="text">старт: результат МНК</text>
+
+  <path d="M915 745 V780" class="line"/>
+
+  <rect x="770" y="785" width="290" height="75" class="box"/>
+  <text x="915" y="814" text-anchor="middle" class="text">Создать популяцию</text>
+  <text x="915" y="840" text-anchor="middle" class="text">случайных вариантов</text>
+
+  <path d="M915 860 V895" class="line"/>
+
+  <polygon points="915,900 1060,960 915,1020 770,960" class="box"/>
+  <text x="915" y="950" text-anchor="middle" class="text">gen &lt;</text>
+  <text x="915" y="976" text-anchor="middle" class="text">GENERATIONS?</text>
+
+  <text x="912" y="1045" text-anchor="end" class="label">да</text>
+  <path d="M915 1020 V1060" class="line"/>
+
+  <rect x="770" y="1065" width="290" height="75" class="box"/>
+  <text x="915" y="1094" text-anchor="middle" class="text">Посчитать score:</text>
+  <text x="915" y="1120" text-anchor="middle" class="text">RMS + штраф</text>
+
+  <path d="M915 1140 V1175" class="line"/>
+
+  <rect x="770" y="1180" width="290" height="75" class="box"/>
+  <text x="915" y="1209" text-anchor="middle" class="text">Отсортировать</text>
+  <text x="915" y="1235" text-anchor="middle" class="text">по ошибке</text>
+
+  <path d="M915 1255 V1290" class="line"/>
+
+  <rect x="770" y="1295" width="290" height="80" class="box"/>
+  <text x="915" y="1326" text-anchor="middle" class="text">Обновить best,</text>
+  <text x="915" y="1353" text-anchor="middle" class="text">если найдено лучше</text>
+
+  <path d="M915 1375 V1410" class="line"/>
+
+  <polygon points="915,1415 1060,1475 915,1535 770,1475" class="box"/>
+  <text x="915" y="1465" text-anchor="middle" class="text">children &lt;</text>
+  <text x="915" y="1491" text-anchor="middle" class="text">POPULATION?</text>
+
+  <text x="912" y="1560" text-anchor="end" class="label">да</text>
+  <path d="M915 1535 V1575" class="line"/>
+
+  <rect x="770" y="1580" width="290" height="75" class="box"/>
+  <text x="915" y="1609" text-anchor="middle" class="text">Мутации и новые</text>
+  <text x="915" y="1635" text-anchor="middle" class="text">параметры</text>
+
+  <path d="M915 1655 V1690" class="line"/>
+
+  <rect x="770" y="1695" width="290" height="75" class="box"/>
+  <text x="915" y="1724" text-anchor="middle" class="text">Новая популяция,</text>
+  <text x="915" y="1750" text-anchor="middle" class="text">gen = gen + 1</text>
+
+  <!-- Петля children: только линии под 90 градусов -->
+  <text x="1070" y="1480" class="label">нет</text>
+  <path d="M1060 1475 H1085 V1732 H1060" class="line"/>
+
+  <!-- Петля generations -->
+  <path d="M770 1732 H735 V960 H770" class="line"/>
+
+  <!-- Выход из ГА -->
+  <text x="1070" y="965" class="label">нет</text>
+  <path d="M1060 960 H1085 V1815 H560 V1820" class="line"/>
+
+  <!-- Сведение ветвей -->
+  <path d="M185 1380 V1815 H500 V1820" class="line"/>
+  <path d="M915 1770 V1815 H600 V1820" class="line"/>
+
+  <rect x="360" y="1825" width="380" height="65" class="box"/>
+  <text x="550" y="1852" text-anchor="middle" class="text">Итоговые данные:</text>
+  <text x="550" y="1877" text-anchor="middle" class="text">исходные, МНК, ГА</text>
+
+  <path d="M550 1890 V1925" class="line"/>
+
+  <rect x="360" y="1930" width="380" height="65" class="box"/>
+  <text x="550" y="1957" text-anchor="middle" class="text">Сохранить txt:</text>
+  <text x="550" y="1982" text-anchor="middle" class="small">12_before, 12_mnk, 12_generative</text>
+
+  <path d="M550 1995 V2030" class="line"/>
+
+  <rect x="360" y="2035" width="380" height="65" class="box"/>
+  <text x="550" y="2062" text-anchor="middle" class="text">Построить графики:</text>
+  <text x="550" y="2087" text-anchor="middle" class="text">3 сферы + H/K</text>
+
+  <path d="M550 2100 V2135" class="line"/>
+
+  <rect x="360" y="2140" width="380" height="65" class="box"/>
+  <text x="550" y="2167" text-anchor="middle" class="text">Вывести RMS,</text>
+  <text x="550" y="2192" text-anchor="middle" class="text">mean, max</text>
+
+  <path d="M550 2205 V2240" class="line"/>
+
+  <rect x="405" y="2245" width="290" height="70" rx="34" class="box"/>
+  <text x="550" y="2288" text-anchor="middle" class="text">Конец</text>
+</svg>
