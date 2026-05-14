@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+# generated calibration outputs
+12_before_scaled.txt
+12_mnk.txt
+12_generative.txt
+graph_*.html
+
+# local desktop/system files
+desktop.ini
+.DS_Store
