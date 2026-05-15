@@ -37,8 +37,8 @@
   <path d="M550 375 V410" class="line"/>
 
   <rect x="340" y="415" width="420" height="80" class="box"/>
-  <text x="550" y="448" text-anchor="middle" class="text">Общее масштабирование:</text>
-  <text x="550" y="474" text-anchor="middle" class="small">H = H / mean(|H|)</text>
+  <text x="550" y="448" text-anchor="middle" class="text">Масштабирование входных данных:</text>
+  <text x="550" y="474" text-anchor="middle" class="small">H = H / 1000</text>
 
   <!-- Разветвление -->
   <path d="M550 495 V520" class="plain"/>

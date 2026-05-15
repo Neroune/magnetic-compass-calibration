@@ -25,9 +25,8 @@ def lengths(points):
     return np.linalg.norm(points, axis=1)
 
 
-def scale_to_mean_field(points):
-    # Общий масштаб для всего набора. Не делим каждую точку на ее длину.
-    return points / lengths(points).mean()
+def scale_input(points):
+    return points / 1000.0
 
 
 def correct(points, bias, scale):
@@ -81,8 +80,8 @@ def score(points, theta):
 
 
 def clip(theta):
-    theta[:3] = np.clip(theta[:3], -0.8, 0.8)
-    theta[3:] = np.clip(theta[3:], math.log(0.4), math.log(2.0))
+    theta[:3] = np.clip(theta[:3], -3.0, 3.0)
+    theta[3:] = np.clip(theta[3:], math.log(0.5), math.log(6.0))
     return theta
 
 
@@ -131,16 +130,16 @@ def save_points(file_name, points):
             f.write(f"{x:.9f}, {y:.9f}, {z:.9f}\n")
 
 
-def save_interactive_plot(file_name, title, points):
+def save_interactive_plot(file_name, title, points, sphere_radius):
     import plotly.graph_objects as go
 
-    limit = max(1.1, float(np.max(np.abs(points))) * 1.05)
+    limit = max(sphere_radius * 1.1, float(np.max(np.abs(points))) * 1.05)
 
     u = np.linspace(0, 2 * math.pi, 50)
     v = np.linspace(0, math.pi, 25)
-    sphere_x = np.outer(np.cos(u), np.sin(v))
-    sphere_y = np.outer(np.sin(u), np.sin(v))
-    sphere_z = np.outer(np.ones_like(u), np.cos(v))
+    sphere_x = sphere_radius * np.outer(np.cos(u), np.sin(v))
+    sphere_y = sphere_radius * np.outer(np.sin(u), np.sin(v))
+    sphere_z = sphere_radius * np.outer(np.ones_like(u), np.cos(v))
 
     fig = go.Figure()
     fig.add_surface(
@@ -212,7 +211,7 @@ def main():
     gen_file = "12_generative.txt"
 
     raw = read_points(input_file)
-    data = scale_to_mean_field(raw)
+    data = scale_input(raw)
 
     mnk, mnk_bias, mnk_scale = calibrate_mnk(data)
     gen, gen_bias, gen_scale = calibrate_generative(data, mnk_bias, mnk_scale)
@@ -220,9 +219,9 @@ def main():
     save_points(mnk_file, mnk)
     save_points(gen_file, gen)
     save_points("12_before_scaled.txt", data)
-    save_interactive_plot("graph_before.html", "До корректировки", data)
-    save_interactive_plot("graph_mnk.html", "После МНК", mnk)
-    save_interactive_plot("graph_generative.html", "После генеративного алгоритма", gen)
+    save_interactive_plot("graph_before.html", "До корректировки", data, 1.0)
+    save_interactive_plot("graph_mnk.html", "После МНК", mnk, 1.0)
+    save_interactive_plot("graph_generative.html", "После генеративного алгоритма", gen, 1.0)
     save_parameters_plot("graph_parameters.html", data)
 
     open_files(["graph_before.html", "graph_mnk.html", "graph_generative.html", "graph_parameters.html"])
